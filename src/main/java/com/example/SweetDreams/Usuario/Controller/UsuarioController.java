@@ -20,7 +20,7 @@ import com.example.SweetDreams.Usuario.Service.UsuarioService;
 
 
 @RestController
-@RequestMapping("/api/usuario")
+@RequestMapping("/usuario")
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
