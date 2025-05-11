@@ -16,20 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SweetDreams.logistica.modelo.Envio;
-import com.example.SweetDreams.logistica.modelo.Producto;
 import com.example.SweetDreams.logistica.repositorio.EnvioRepositorio;
-import com.example.SweetDreams.logistica.repositorio.ProductoRepositorio;
 
 @RestController
 @RequestMapping("/api/envios")
 
 public class EnvioControlador {
-
     private final EnvioRepositorio envioRepositorio;
-
-    @Autowired
-    private ProductoRepositorio productoRepositorio;
-
     @Autowired
     public EnvioControlador(EnvioRepositorio envioRepositorio) {
         this.envioRepositorio = envioRepositorio;
@@ -41,36 +34,36 @@ public class EnvioControlador {
         return new ResponseEntity<>(envios, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Producto> getProductById(@PathVariable Long id) {
-        Optional<Producto> producto = productoRepositorio.findById(id);
-        return producto.map(response -> ResponseEntity.ok().body(response))
+    @GetMapping("/{idEnvio}")
+    public ResponseEntity<Envio> getEnvioById(@PathVariable Long idEnvio) {
+        return envioRepositorio.findById(idEnvio)
+                .map(response -> ResponseEntity.ok().body(response))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<Producto> crearProducto(@RequestBody Producto producto) {
-        Producto nuevoProducto = productoRepositorio.save(producto);
-        return new ResponseEntity<>(nuevoProducto, HttpStatus.CREATED);
+    public ResponseEntity<Envio> crearEnvio(@RequestBody Envio envio) {
+        Envio nuevoEnvio = envioRepositorio.save(envio);
+        return new ResponseEntity<>(nuevoEnvio, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        Optional<Producto> productoExistente = productoRepositorio.findById(id);
-        if (productoExistente.isPresent()) {
-            producto.setId(id); // Asegurar que el ID sea el correcto para la actualización
-            Producto productoActualizado = productoRepositorio.save(producto);
-            return new ResponseEntity<>(productoActualizado, HttpStatus.OK);
+    public ResponseEntity<Envio> actualizarEnvio(@PathVariable Long idEnvio, @RequestBody Envio envio) {
+        Optional<Envio> envioExistente = envioRepositorio.findById(idEnvio);
+        if (envioExistente.isPresent()) {
+            envio.setIdEnvio(idEnvio); 
+            Envio envioActualizado = envioRepositorio.save(envio);
+            return new ResponseEntity<>(envioActualizado, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> borrarProducto(@PathVariable Long id) {
-        Optional<Producto> productoABorrar = productoRepositorio.findById(id);
-        if (productoABorrar.isPresent()) {
-            productoRepositorio.deleteById(id);
+    public ResponseEntity<Void> borrarEnvio(@PathVariable Long idEnvio) {
+        Optional<Envio> envioABorrar = envioRepositorio.findById(idEnvio);
+        if (envioABorrar.isPresent()) {
+            envioRepositorio.deleteById(idEnvio);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
