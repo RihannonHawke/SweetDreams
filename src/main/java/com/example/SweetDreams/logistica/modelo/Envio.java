@@ -1,6 +1,8 @@
 package com.example.SweetDreams.logistica.modelo;
 
 
+import com.example.SweetDreams.venta.modelo.Venta;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +23,7 @@ public class Envio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEnvio;
-    
+    private Long idVenta;
     private String direccionDestino;
     private String ciudadDestino;
     private Double costoEnvio;
@@ -33,6 +35,9 @@ public class Envio {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    
-
+    public void asignarIdVentaDesdeVenta(Venta venta) {
+        this.idVenta = venta.getIdVenta(); // Accede al idVenta desde el objeto Venta
+    }
 }
+
+
