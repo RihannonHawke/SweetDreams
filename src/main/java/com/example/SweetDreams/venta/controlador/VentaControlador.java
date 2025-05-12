@@ -1,5 +1,6 @@
 package com.example.SweetDreams.venta.controlador;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.example.SweetDreams.venta.modelo.Venta;
 import com.example.SweetDreams.venta.repositorio.VentaRepositorio;
 import org.springframework.web.bind.annotation.*;
@@ -31,4 +32,13 @@ public class VentaControlador {
     public Venta obtenerPorId(@PathVariable Long id) {
         return ventaRepositorio.findById(id).orElse(null);
     }
+
+    @Transactional
+    @DeleteMapping("/cliente/{clienteId}")
+    public String eliminarVentasPorCliente(@PathVariable Long clienteId) {
+    ventaRepositorio.deleteByClienteId(clienteId);
+        return "Ventas del cliente " + clienteId + " eliminadas.";
+    }
+
+    
 }
