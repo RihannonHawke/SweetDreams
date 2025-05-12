@@ -59,7 +59,7 @@ public class EnvioControlador {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{idEnvio}")
     public ResponseEntity<Void> borrarEnvio(@PathVariable Long idEnvio) {
         Optional<Envio> envioABorrar = envioRepositorio.findById(idEnvio);
         if (envioABorrar.isPresent()) {

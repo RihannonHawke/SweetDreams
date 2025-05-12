@@ -31,9 +31,7 @@ public class Envio {
     private double telefono;
     private String estado;
 
-    public void setIdEnvio(Long idEnvio) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
 
     public void asignarIdVentaDesdeVenta(Venta venta) {
         this.idVenta = venta.getIdVenta(); // Accede al idVenta desde el objeto Venta
