@@ -47,7 +47,7 @@ public class EnvioControlador {
         return new ResponseEntity<>(nuevoEnvio, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{idEnvio}")
     public ResponseEntity<Envio> actualizarEnvio(@PathVariable Long idEnvio, @RequestBody Envio envio) {
         Optional<Envio> envioExistente = envioRepositorio.findById(idEnvio);
         if (envioExistente.isPresent()) {

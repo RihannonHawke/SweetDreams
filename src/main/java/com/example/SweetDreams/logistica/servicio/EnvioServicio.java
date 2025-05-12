@@ -13,6 +13,7 @@ import com.example.SweetDreams.logistica.repositorio.EnvioRepositorio;
 @Service
 public class EnvioServicio {
 private final EnvioRepositorio EnvioRepositorio;
+private Long idEnvio;
 
 @Autowired
 public EnvioServicio(EnvioRepositorio envioRepositorio) {
@@ -45,4 +46,8 @@ public void borrarEnvio(Long idEnvio) {
 }
 
 
+
+public Long getIdEnvio() {
+        return idEnvio;
+    }
 }

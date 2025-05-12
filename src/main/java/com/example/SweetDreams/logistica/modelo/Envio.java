@@ -21,11 +21,18 @@ public class Envio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEnvio;
+    
     private String direccionDestino;
     private String ciudadDestino;
     private Double costoEnvio;
     private String fechaEnvio;
     private double telefono;
     private String estado;
+
+    public void setIdEnvio(Long idEnvio) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    
 
 }
