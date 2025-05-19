@@ -1,12 +1,19 @@
 package com.example.SweetDreams.venta.controlador;
 
-import org.springframework.transaction.annotation.Transactional;
+import com.example.SweetDreams.venta.dto.CarritoDTO;
+import com.example.SweetDreams.venta.dto.ItemCarritoDTO;
 import com.example.SweetDreams.venta.modelo.Carrito;
 import com.example.SweetDreams.venta.modelo.Venta;
 import com.example.SweetDreams.venta.repositorio.CarritoRespositorio;
 import com.example.SweetDreams.venta.repositorio.VentaRepositorio;
+import com.example.SweetDreams.logistica.modelo.Producto;
+import com.example.SweetDreams.logistica.repositorio.ProductoRepositorio;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,24 +23,42 @@ public class CarritoControlador {
     private final CarritoRespositorio carritoRepositorio;
     private final VentaRepositorio ventaRepositorio;
 
+    @Autowired
+    private ProductoRepositorio productoRepositorio;
+
     public CarritoControlador(CarritoRespositorio carritoRepositorio, VentaRepositorio ventaRepositorio) {
         this.carritoRepositorio = carritoRepositorio;
         this.ventaRepositorio = ventaRepositorio;
     }
 
-    // Agregar productos al carrito
+    // Agregar productos al carrito con DTO
     @PostMapping
-    public Carrito agregar(@RequestBody Carrito item) {
-        return carritoRepositorio.save(item);
+    public List<Carrito> agregar(@RequestBody CarritoDTO carritoDTO) {
+        List<Carrito> carritoItems = new ArrayList<>();
+
+        for (ItemCarritoDTO item : carritoDTO.getItems()) {
+            Producto producto = productoRepositorio.findById(item.getProductoId())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + item.getProductoId()));
+
+            Carrito carrito = new Carrito();
+            carrito.setClienteId(carritoDTO.getClienteId());
+            carrito.setProducto(producto.getNombre());
+            carrito.setCantidad(item.getCantidad());
+            carrito.setPrecioUnitario(item.getPrecioUnitario());
+
+            carritoItems.add(carritoRepositorio.save(carrito));
+        }
+
+        return carritoItems;
     }
 
-    // Obtener carrito por cliente
+    // Obtener productos del carrito por cliente
     @GetMapping("/{clienteId}")
     public List<Carrito> obtenerPorCliente(@PathVariable Long clienteId) {
         return carritoRepositorio.findByClienteId(clienteId);
     }
 
-    // Confirmar compra y mover a ventas
+    // Confirmar compra: mover productos del carrito a ventas y limpiar carrito
     @Transactional
     @PostMapping("/confirmar/{clienteId}")
     public String confirmarCompra(@PathVariable Long clienteId) {
@@ -48,7 +73,7 @@ public class CarritoControlador {
             venta.setProducto(item.getProducto());
             venta.setCantidad(item.getCantidad());
             venta.setPrecioUnitario(item.getPrecioUnitario());
-            venta.setMetodoPago("Efectivo"); // Lógica personalizable
+            venta.setMetodoPago("Efectivo"); // O reemplaza con lógica real de método de pago
             venta.setClienteId(item.getClienteId());
             venta.setFechaVenta(java.time.LocalDate.now());
 
@@ -57,34 +82,5 @@ public class CarritoControlador {
 
         carritoRepositorio.deleteByClienteId(clienteId);
         return "Compra confirmada. Productos movidos a ventas.";
-    }
-
-    // Eliminar un producto específico del carrito con validación
-    @DeleteMapping("/{id}")
-    public String eliminarItemCarrito(@PathVariable Long id) {
-        if (carritoRepositorio.existsById(id)) {
-            carritoRepositorio.deleteById(id);
-            return "Producto con ID " + id + " eliminado del carrito.";
-        } else {
-            return "Producto con ID " + id + " no encontrado en el carrito.";
-        }
-    }
-
-    // Vaciar carrito completo sin confirmar compra
-    @DeleteMapping("/vaciar/{clienteId}")
-    public String vaciarCarrito(@PathVariable Long clienteId) {
-        List<Carrito> carrito = carritoRepositorio.findByClienteId(clienteId);
-        if (carrito.isEmpty()) {
-            return "El carrito del cliente " + clienteId + " ya está vacío.";
-        }
-        carritoRepositorio.deleteByClienteId(clienteId);
-        return "Carrito del cliente " + clienteId + " vaciado.";
-    }
-
-    // Eliminar ventas por cliente (solo si es necesario)
-    @DeleteMapping("/ventas/{clienteId}")
-    public String eliminarVentasPorCliente(@PathVariable Long clienteId) {
-        ventaRepositorio.deleteByClienteId(clienteId);
-        return "Ventas del cliente " + clienteId + " eliminadas.";
     }
 }
