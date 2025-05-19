@@ -48,7 +48,7 @@ public class CarritoControlador {
             venta.setProducto(item.getProducto());
             venta.setCantidad(item.getCantidad());
             venta.setPrecioUnitario(item.getPrecioUnitario());
-            venta.setMetodoPago("Efectivo"); // Puedes reemplazarlo por lógica personalizada
+            venta.setMetodoPago("Efectivo"); // Lógica personalizable
             venta.setClienteId(item.getClienteId());
             venta.setFechaVenta(java.time.LocalDate.now());
 
@@ -56,13 +56,35 @@ public class CarritoControlador {
         }
 
         carritoRepositorio.deleteByClienteId(clienteId);
-
         return "Compra confirmada. Productos movidos a ventas.";
     }
 
+    // Eliminar un producto específico del carrito con validación
+    @DeleteMapping("/{id}")
+    public String eliminarItemCarrito(@PathVariable Long id) {
+        if (carritoRepositorio.existsById(id)) {
+            carritoRepositorio.deleteById(id);
+            return "Producto con ID " + id + " eliminado del carrito.";
+        } else {
+            return "Producto con ID " + id + " no encontrado en el carrito.";
+        }
+    }
+
+    // Vaciar carrito completo sin confirmar compra
+    @DeleteMapping("/vaciar/{clienteId}")
+    public String vaciarCarrito(@PathVariable Long clienteId) {
+        List<Carrito> carrito = carritoRepositorio.findByClienteId(clienteId);
+        if (carrito.isEmpty()) {
+            return "El carrito del cliente " + clienteId + " ya está vacío.";
+        }
+        carritoRepositorio.deleteByClienteId(clienteId);
+        return "Carrito del cliente " + clienteId + " vaciado.";
+    }
+
+    // Eliminar ventas por cliente (solo si es necesario)
     @DeleteMapping("/ventas/{clienteId}")
     public String eliminarVentasPorCliente(@PathVariable Long clienteId) {
         ventaRepositorio.deleteByClienteId(clienteId);
-            return "Ventas del cliente " + clienteId + " eliminadas.";
+        return "Ventas del cliente " + clienteId + " eliminadas.";
     }
 }
