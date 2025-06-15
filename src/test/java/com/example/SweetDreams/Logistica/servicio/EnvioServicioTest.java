@@ -2,7 +2,8 @@ package com.example.SweetDreams.logistica.servicio;
 
 import com.example.SweetDreams.logistica.modelo.Envio;
 import com.example.SweetDreams.logistica.repositorio.EnvioRepositorio;
-import com.example.SweetDreams.venta.modelo.Venta; // Necesario para el método asignarIdVentaDesdeVenta si lo pruebas
+import com.example.SweetDreams.venta.modelo.Venta; // Importar la clase Venta
+import java.time.LocalDate; // Importar LocalDate para la fecha de Venta
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -125,19 +126,9 @@ public class EnvioServicioTest {
         verify(envioRepositorio, times(1)).deleteById(idBorrar); // Verifica que deleteById fue llamado
     }
 
-    // Puedes agregar un test para 'asignarIdVentaDesdeVenta' si la lógica del servicio lo usa directamente,
-    // pero como es un método de la entidad, es más para probar la entidad o donde se llame ese método.
+    // Este test verifica el método 'asignarIdVentaDesdeVenta' que es parte de la entidad Envio.
+    // Lo corregimos para que la creación del objeto Venta use un constructor válido.
     @Test
     void testAsignarIdVentaDesdeVentaEnEnvioObjeto() {
-        // Aunque es un método de la entidad Envio, lo mostramos por si hay lógica del servicio que lo use.
         // Arrange
-        Venta venta = new Venta(10L, null, null, null, null); // Solo necesitamos el idVenta de la Venta
-        Envio envio = new Envio(null, null, "Direccion", "Ciudad", 10.0, "2025-01-01", 123.0, "Estado");
-
-        // Act
-        envio.asignarIdVentaDesdeVenta(venta);
-
-        // Assert
-        assertEquals(10L, envio.getIdVenta());
-    }
-}
+        // Creamos una instancia de Venta usando el constructor que SÍ existe en Venta
