@@ -1,50 +1,53 @@
 package com.example.SweetDreams.Usuario.Service;
 
-import com.example.SweetDreams.Usuario.Model.Usuario;
-import com.example.SweetDreams.Usuario.Repository.UsuarioRepository;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Optional; //
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals; //
+import static org.junit.jupiter.api.Assertions.assertNotNull; //
+import static org.junit.jupiter.api.Assertions.assertTrue; //
+import org.junit.jupiter.api.BeforeEach; //
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.mockito.InjectMocks;
+import org.mockito.Mock; //
+import static org.mockito.Mockito.doNothing; //
+import static org.mockito.Mockito.times; //
+import static org.mockito.Mockito.verify; //
+import static org.mockito.Mockito.when; //
+import org.mockito.MockitoAnnotations; //
+
+import com.example.SweetDreams.Usuario.Model.Usuario; //
+import com.example.SweetDreams.Usuario.Repository.UsuarioRepository; //
 
 public class UsuarioServicioTest {
 
-    @Mock
+    @Mock //
     private UsuarioRepository usuarioRepository; // Mock del repositorio
 
-    @InjectMocks
+    @InjectMocks //
     private UsuarioService usuarioService; // El servicio que queremos probar
 
-    @BeforeEach
+    @BeforeEach //
     void setUp() {
         // Inicializa los mocks antes de cada test
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
+    @Test //
     void testGuardarUsuario() {
         // 1. Configuración de datos de prueba (Arrange)
-        Usuario usuarioAguardar = new Usuario("testuser", "test@example.com", "password123");
+        // MODIFICADO: Ahora usa el constructor generado por Lombok (@AllArgsConstructor) que incluye el ID.
+        // Se pasa 'null' para el ID porque la base de datos lo genera al guardar.
+        Usuario usuarioAguardar = new Usuario(null, "testuser", "test@example.com", "password123");
+        
         // Simula el comportamiento del repositorio:
         // Cuando se llame a save() con cualquier objeto Usuario, devuelve el mismo Usuario
         // simulando que la base de datos le asigna un ID.
-        Usuario usuarioGuardado = new Usuario("testuser", "test@example.com", "password123");
-        usuarioGuardado.setId(1L); // Asigna un ID simulado para el resultado
+        // MODIFICADO: También usa el constructor con ID para el usuario guardado simulado.
+        Usuario usuarioGuardado = new Usuario(1L, "testuser", "test@example.com", "password123");
+        // La línea usuarioGuardado.setId(1L); es redundante si ya lo pasas en el constructor, pero no causa daño.
 
         when(usuarioRepository.save(any(Usuario.class))).thenReturn(usuarioGuardado);
 
@@ -63,13 +66,14 @@ public class UsuarioServicioTest {
         verify(usuarioRepository, times(1)).save(usuarioAguardar);
     }
 
-    @Test
+    @Test //
     void testGetAllUsuarios() {
         // Arrange
-        Usuario usuario1 = new Usuario("user1", "user1@example.com", "pass1");
-        usuario1.setId(1L);
-        Usuario usuario2 = new Usuario("user2", "user2@example.com", "pass2");
-        usuario2.setId(2L);
+        // MODIFICADO: Uso del constructor con ID.
+        Usuario usuario1 = new Usuario(1L, "user1", "user1@example.com", "pass1");
+        // usuario1.setId(1L); // Redundante
+        Usuario usuario2 = new Usuario(2L, "user2", "user2@example.com", "pass2");
+        // usuario2.setId(2L); // Redundante
         List<Usuario> usuarios = Arrays.asList(usuario1, usuario2);
 
         when(usuarioRepository.findAll()).thenReturn(usuarios);
@@ -86,11 +90,12 @@ public class UsuarioServicioTest {
         verify(usuarioRepository, times(1)).findAll();
     }
 
-    @Test
+    @Test //
     void testGetUsuarioById() {
         // Arrange
-        Usuario usuario = new Usuario("userById", "user@id.com", "passById");
-        usuario.setId(5L);
+        // MODIFICADO: Uso del constructor con ID.
+        Usuario usuario = new Usuario(5L, "userById", "user@id.com", "passById");
+        // usuario.setId(5L); // Redundante
 
         when(usuarioRepository.findById(5L)).thenReturn(Optional.of(usuario));
         when(usuarioRepository.findById(99L)).thenReturn(Optional.empty()); // Para un ID no encontrado
@@ -108,7 +113,7 @@ public class UsuarioServicioTest {
         verify(usuarioRepository, times(1)).findById(99L);
     }
 
-    @Test
+    @Test //
     void testEliminarUsuario() {
         // Arrange
         Long idAEliminar = 1L;
