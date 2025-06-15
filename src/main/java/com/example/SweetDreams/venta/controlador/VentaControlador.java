@@ -1,33 +1,42 @@
 package com.example.SweetDreams.venta.controlador;
 
-import com.example.SweetDreams.venta.modelo.Carrito;
-import com.example.SweetDreams.venta.modelo.Venta;
-import com.example.SweetDreams.venta.repositorio.CarritoRespositorio;
-import com.example.SweetDreams.venta.repositorio.VentaRepositorio;
+import java.time.LocalDate;
+import java.util.List; // Solo VentaRepositorio
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional; // Para deleteByClienteId si VentaRepositorio lo tiene
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.example.SweetDreams.venta.modelo.Venta;
+import com.example.SweetDreams.venta.repositorio.VentaRepositorio;
 
 @RestController
 @RequestMapping("/ventas")
 public class VentaControlador {
 
     private final VentaRepositorio ventaRepositorio;
-    private final CarritoRespositorio carritoRepositorio;
+    // private final CarritoRespositorio carritoRepositorio; // Ya no es necesario inyectar aquí
 
-    public VentaControlador(VentaRepositorio ventaRepositorio, CarritoRespositorio carritoRepositorio) {
+    public VentaControlador(VentaRepositorio ventaRepositorio /*, CarritoRespositorio carritoRepositorio */) {
         this.ventaRepositorio = ventaRepositorio;
-        this.carritoRepositorio = carritoRepositorio;
+        // this.carritoRepositorio = carritoRepositorio;
     }
 
-    // Registrar una venta directa
+    // Registrar una venta directa (si el cliente no pasa por carrito)
     @PostMapping
     public ResponseEntity<Venta> registrar(@RequestBody Venta venta) {
-        venta.setFechaVenta(LocalDate.now());
+        venta.setFechaVenta(LocalDate.now()); // Establecer la fecha de la venta
+        // También puedes establecer un estado inicial y calcular el total si es una venta directa.
+        // venta.setEstado("PENDIENTE");
+        // venta.setTotal(calcularTotalVentaDirecta(venta)); // Necesitarías esta lógica si aplicara
+
         Venta ventaGuardada = ventaRepositorio.save(venta);
         return new ResponseEntity<>(ventaGuardada, HttpStatus.CREATED);
     }
@@ -58,37 +67,18 @@ public class VentaControlador {
         }
     }
 
-    // Eliminar todas las ventas de un cliente
+    // Eliminar todas las ventas de un cliente (si tu repositorio tiene este método)
     @Transactional
     @DeleteMapping("/cliente/{clienteId}")
     public ResponseEntity<String> eliminarVentasPorCliente(@PathVariable Long clienteId) {
+        // Asegúrate de que VentaRepositorio tiene un método deleteByClienteId(Long)
         ventaRepositorio.deleteByClienteId(clienteId);
         return new ResponseEntity<>("Ventas del cliente " + clienteId + " eliminadas.", HttpStatus.OK);
     }
 
-    // Confirmar carrito: transformar productos del carrito en ventas
-    @PostMapping("/confirmar-carrito")
-    public ResponseEntity<String> confirmarCarrito(@RequestParam Long clienteId, @RequestParam String metodoPago) {
-        List<Carrito> carritoItems = carritoRepositorio.findByClienteId(clienteId);
-
-        if (carritoItems.isEmpty()) {
-            return new ResponseEntity<>("El carrito del cliente " + clienteId + " está vacío.", HttpStatus.BAD_REQUEST);
-        }
-
-        for (Carrito item : carritoItems) {
-            Venta venta = new Venta();
-            venta.setProducto(item.getProducto());
-            venta.setCantidad(item.getCantidad());
-            venta.setPrecioUnitario(item.getPrecioUnitario());
-            venta.setMetodoPago(metodoPago);
-            venta.setFechaVenta(LocalDate.now());
-            venta.setClienteId(clienteId);
-
-            ventaRepositorio.save(venta);
-        }
-
-        carritoRepositorio.deleteByClienteId(clienteId);
-
-        return new ResponseEntity<>("Venta(s) generada(s) y carrito limpiado para cliente " + clienteId, HttpStatus.OK);
-    }
+    // *** ELIMINADO: La lógica de confirmar carrito se manejó en CarritoControlador y VentaServicio ***
+    // @PostMapping("/confirmar-carrito") // ESTE MÉTODO DEBE SER ELIMINADO O COMENTADO
+    // public ResponseEntity<String> confirmarCarrito(@RequestParam Long clienteId, @RequestParam String metodoPago) {
+    //     // ... esta lógica ahora está en VentaServicio y es llamada por CarritoControlador
+    // }
 }
