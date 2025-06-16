@@ -38,13 +38,10 @@ public class UsuarioServicioTest {
     @Test //
     void testGuardarUsuario() {
         // 1. Configuración de datos de prueba (Arrange)
-        // MODIFICADO: Ahora usa el constructor generado por Lombok (@AllArgsConstructor) que incluye el ID.
-        // Se pasa 'null' para el ID porque la base de datos lo genera al guardar.
+                // Se pasa 'null' para el ID porque la base de datos lo genera al guardar.
         Usuario usuarioAguardar = new Usuario(null, "testuser", "test@example.com", "password123");
         
-        // Simula el comportamiento del repositorio:
-        // Cuando se llame a save() con cualquier objeto Usuario, devuelve el mismo Usuario
-        // simulando que la base de datos le asigna un ID.
+        
         // MODIFICADO: También usa el constructor con ID para el usuario guardado simulado.
         Usuario usuarioGuardado = new Usuario(1L, "testuser", "test@example.com", "password123");
         // La línea usuarioGuardado.setId(1L); es redundante si ya lo pasas en el constructor, pero no causa daño.

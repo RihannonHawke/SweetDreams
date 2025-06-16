@@ -1,4 +1,4 @@
-package com.example.SweetDreams.logistica.servicio; // PAQUETE EN MINÚSCULAS
+package com.example.SweetDreams.logistica.servicio;
 
 import java.util.Arrays;
 import java.util.List;
