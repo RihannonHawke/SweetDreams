@@ -1,42 +1,44 @@
-package com.example.SweetDreams.Logistica.servicio;
+package com.example.SweetDreams.logistica.servicio;
 
-import com.example.SweetDreams.logistica.modelo.Envio;
-import com.example.SweetDreams.logistica.repositorio.EnvioRepositorio;
-import com.example.SweetDreams.venta.modelo.Venta; // Importar la clase Venta
-import java.time.LocalDate; // Importar LocalDate para la fecha de Venta
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+
+import com.example.SweetDreams.logistica.modelo.Envio;
+import com.example.SweetDreams.logistica.repositorio.EnvioRepositorio;
+import com.example.SweetDreams.venta.modelo.Venta;
 
 public class EnvioServicioTest {
 
     @Mock
-    private EnvioRepositorio envioRepositorio; // Mock del repositorio de Envio
+    private EnvioRepositorio envioRepositorio;
 
     @InjectMocks
-    private EnvioServicio envioServicio; // El servicio de Envio que vamos a probar
+    private EnvioServicio envioServicio;
 
     @BeforeEach
     void setUp() {
-        // Inicializa los mocks antes de cada test
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testCrearEnvio() {
         // Arrange
-        // Usamos el constructor de Lombok @AllArgsConstructor para Envio
         // CORREGIDO: Quitado las etiquetas de argumento (idEnvio:, idVenta:, etc.)
         Envio nuevoEnvio = new Envio(null, 101L, "Calle Falsa 123", "Springfield", 5.50, "2025-06-15", 1234567890.0, "Pendiente");
 
@@ -52,7 +54,7 @@ public class EnvioServicioTest {
         assertNotNull(resultado, "El envío guardado no debería ser nulo");
         assertEquals(1L, resultado.getIdEnvio(), "El ID del envío debería ser el esperado");
         assertEquals("Springfield", resultado.getCiudadDestino(), "La ciudad destino debería coincidir");
-        verify(envioRepositorio, times(1)).save(nuevoEnvio); // Verifica que save fue llamado
+        verify(envioRepositorio, times(1)).save(nuevoEnvio);
     }
 
     @Test
@@ -81,7 +83,7 @@ public class EnvioServicioTest {
         Envio envioExistente = new Envio(3L, 103L, "Dir3", "Ciudad3", 20.0, "2025-06-03", 333333333.0, "Pendiente");
 
         when(envioRepositorio.findById(3L)).thenReturn(Optional.of(envioExistente));
-        when(envioRepositorio.findById(99L)).thenReturn(Optional.empty()); // Simula no encontrado
+        when(envioRepositorio.findById(99L)).thenReturn(Optional.empty());
 
         // Act
         Optional<Envio> encontrado = envioServicio.getEnvioById(3L);
@@ -119,24 +121,20 @@ public class EnvioServicioTest {
     void testBorrarEnvio() {
         // Arrange
         Long idBorrar = 5L;
-        doNothing().when(envioRepositorio).deleteById(idBorrar); // No hace nada al llamar deleteById
+        doNothing().when(envioRepositorio).deleteById(idBorrar);
 
         // Act
         envioServicio.borrarEnvio(idBorrar);
 
         // Assert
-        verify(envioRepositorio, times(1)).deleteById(idBorrar); // Verifica que deleteById fue llamado
+        verify(envioRepositorio, times(1)).deleteById(idBorrar);
     }
 
-    // Este test verifica el método 'asignarIdVentaDesdeVenta' que es parte de la entidad Envio.
-    // Lo corregimos para que la creación del objeto Venta use un constructor válido.
     @Test
     void testAsignarIdVentaDesdeVentaEnEnvioObjeto() {
         // Arrange
-        // Creamos una instancia de Venta usando el constructor que SÍ existe en Venta.java
-        // Venta(Long clienteId, LocalDate fechaVenta, double total, String estado)
         Venta venta = new Venta(1L, LocalDate.now(), 50.0, "Completada");
-        venta.setIdVenta(10L); // Luego establecemos el ID de la venta que queremos simular
+        venta.setIdVenta(10L);
 
         // CORREGIDO: Quitado las etiquetas de argumento
         Envio envio = new Envio(null, null, "Direccion", "Ciudad", 10.0, "2025-01-01", 123.0, "Estado");
