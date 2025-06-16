@@ -33,10 +33,10 @@ public class ProductoServicioTest {
     @Test
     void testCrearProducto() {
         // Arrange
-        // ¡CONSTRUCTORES SIN ETIQUETAS DE ARGUMENTO!
-        Producto nuevoProducto = new Producto(null, "Laptop Gamer", "Portátil de alta gama", 1500.0, 10, "Electrónica");
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
+        Producto nuevoProducto = new Producto(null, "Laptop Gamer", "Portátil de alta gama", 1500.0);
 
-        Producto productoGuardado = new Producto(1L, "Laptop Gamer", "Portátil de alta gama", 1500.0, 10, "Electrónica");
+        Producto productoGuardado = new Producto(1L, "Laptop Gamer", "Portátil de alta gama", 1500.0);
         when(productoRepositorio.save(any(Producto.class))).thenReturn(productoGuardado);
 
         // Act
@@ -52,8 +52,9 @@ public class ProductoServicioTest {
     @Test
     void testGetAllProductos() {
         // Arrange
-        Producto prod1 = new Producto(1L, "Teclado Mecánico", "Teclado gaming retroiluminado", 80.0, 50, "Periféricos");
-        Producto prod2 = new Producto(2L, "Mouse Inalámbrico", "Mouse ergonómico", 30.0, 100, "Periféricos");
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
+        Producto prod1 = new Producto(1L, "Teclado Mecánico", "Teclado gaming retroiluminado", 80.0);
+        Producto prod2 = new Producto(2L, "Mouse Inalámbrico", "Mouse ergonómico", 30.0);
         List<Producto> productos = Arrays.asList(prod1, prod2);
 
         when(productoRepositorio.findAll()).thenReturn(productos);
@@ -72,7 +73,8 @@ public class ProductoServicioTest {
     @Test
     void testGetProductoById() {
         // Arrange
-        Producto productoExistente = new Producto(3L, "Monitor Curvo", "Monitor de 27 pulgadas", 300.0, 20, "Monitores");
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
+        Producto productoExistente = new Producto(3L, "Monitor Curvo", "Monitor de 27 pulgadas", 300.0);
 
         when(productoRepositorio.findById(3L)).thenReturn(Optional.of(productoExistente));
         when(productoRepositorio.findById(99L)).thenReturn(Optional.empty());
@@ -93,8 +95,9 @@ public class ProductoServicioTest {
     @Test
     void testActualizarProducto() {
         // Arrange
-        Producto productoActualizado = new Producto(4L, "Auriculares Bluetooth", "Auriculares con cancelación de ruido", 120.0, 30, "Audio");
-        Producto productoModificado = new Producto(4L, "Auriculares Bluetooth Pro", "Auriculares con cancelación de ruido y estuche", 130.0, 25, "Audio");
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
+        Producto productoActualizado = new Producto(4L, "Auriculares Bluetooth", "Auriculares con cancelación de ruido", 120.0);
+        Producto productoModificado = new Producto(4L, "Auriculares Bluetooth Pro", "Auriculares con cancelación de ruido y estuche", 130.0);
 
         when(productoRepositorio.save(any(Producto.class))).thenReturn(productoModificado);
 
@@ -105,7 +108,8 @@ public class ProductoServicioTest {
         assertNotNull(resultado);
         assertEquals(4L, resultado.getId());
         assertEquals("Auriculares Bluetooth Pro", resultado.getNombre());
-        assertEquals(25, resultado.getStock());
+        // La línea getStock() fue eliminada ya que no existe en tu clase Producto
+        // assertEquals(25, resultado.getStock());
         verify(productoRepositorio, times(1)).save(productoModificado);
     }
 

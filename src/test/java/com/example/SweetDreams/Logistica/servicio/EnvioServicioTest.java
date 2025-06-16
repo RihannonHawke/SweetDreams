@@ -1,8 +1,8 @@
-package com.example.SweetDreams.logistica.servicio;
+package com.example.SweetDreams.logistica.servicio; // PAQUETE EN MINÚSCULAS
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
+import java.util.List; // Asegúrate de que Venta tenga los campos correctos para su constructor
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,11 +39,9 @@ public class EnvioServicioTest {
     @Test
     void testCrearEnvio() {
         // Arrange
-        // CORREGIDO: Quitado las etiquetas de argumento (idEnvio:, idVenta:, etc.)
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
         Envio nuevoEnvio = new Envio(null, 101L, "Calle Falsa 123", "Springfield", 5.50, "2025-06-15", 1234567890.0, "Pendiente");
 
-        // Simula el comportamiento del repositorio cuando se guarda un envío
-        // CORREGIDO: Quitado las etiquetas de argumento
         Envio envioGuardado = new Envio(1L, 101L, "Calle Falsa 123", "Springfield", 5.50, "2025-06-15", 1234567890.0, "Pendiente");
         when(envioRepositorio.save(any(Envio.class))).thenReturn(envioGuardado);
 
@@ -60,6 +58,7 @@ public class EnvioServicioTest {
     @Test
     void testGetAllEnvios() {
         // Arrange
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
         Envio envio1 = new Envio(1L, 101L, "Dir1", "Ciudad1", 10.0, "2025-06-01", 111111111.0, "En Proceso");
         Envio envio2 = new Envio(2L, 102L, "Dir2", "Ciudad2", 15.0, "2025-06-02", 222222222.0, "Entregado");
         List<Envio> envios = Arrays.asList(envio1, envio2);
@@ -80,6 +79,7 @@ public class EnvioServicioTest {
     @Test
     void testGetEnvioById() {
         // Arrange
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
         Envio envioExistente = new Envio(3L, 103L, "Dir3", "Ciudad3", 20.0, "2025-06-03", 333333333.0, "Pendiente");
 
         when(envioRepositorio.findById(3L)).thenReturn(Optional.of(envioExistente));
@@ -101,6 +101,7 @@ public class EnvioServicioTest {
     @Test
     void testActualizarEnvio() {
         // Arrange
+        // CONSTRUCTORES AHORA SIN ETIQUETAS DE ARGUMENTO
         Envio envioActualizado = new Envio(4L, 104L, "Dir4", "Ciudad4", 25.0, "2025-06-04", 444444444.0, "En Proceso");
         Envio envioModificado = new Envio(4L, 104L, "Nueva Dir4", "Nueva Ciudad4", 26.0, "2025-06-05", 444444444.0, "Entregado");
 
@@ -136,7 +137,6 @@ public class EnvioServicioTest {
         Venta venta = new Venta(1L, LocalDate.now(), 50.0, "Completada");
         venta.setIdVenta(10L);
 
-        // CORREGIDO: Quitado las etiquetas de argumento
         Envio envio = new Envio(null, null, "Direccion", "Ciudad", 10.0, "2025-01-01", 123.0, "Estado");
 
         // Act
