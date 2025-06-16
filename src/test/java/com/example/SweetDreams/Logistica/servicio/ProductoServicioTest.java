@@ -1,4 +1,4 @@
-package com.example.SweetDreams.logistica.servicio;
+package com.example.SweetDreams.Logistica.servicio;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +39,8 @@ public class ProductoServicioTest {
     void testCrearProducto() {
         // Arrange
         // Usamos el constructor de Lombok @AllArgsConstructor para Producto
+        // Asegúrate de que los tipos de datos coincidan con los de tu clase Producto.java
+// Por ejemplo, si 'precio' es Double, 1500.0 es correcto. Si fuera Long, sería 1500L.
         Producto nuevoProducto = new Producto(null, "Laptop Gamer", "Portátil de alta gama", 1500.0);
 
         // Simula el comportamiento del repositorio cuando se guarda un producto
