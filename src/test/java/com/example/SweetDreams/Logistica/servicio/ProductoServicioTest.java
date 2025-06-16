@@ -1,6 +1,6 @@
-package com.example.SweetDreams.logistica.servicio; // PAQUETE CORREGIDO CON 'L' MAYÚSCULA
+package com.example.SweetDreams.logistica.servicio; // PAQUETE EN MINÚSCULAS
 
-import com.example.SweetDreams.logistica.modelo.Producto; // Importar la clase Producto
+import com.example.SweetDreams.logistica.modelo.Producto;
 import com.example.SweetDreams.logistica.repositorio.ProductoRepositorio;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,27 +20,22 @@ import static org.mockito.Mockito.*;
 public class ProductoServicioTest {
 
     @Mock
-    private ProductoRepositorio productoRepositorio; // Mock del repositorio de Producto
+    private ProductoRepositorio productoRepositorio;
 
     @InjectMocks
-    private ProductoServicio productoServicio; // El servicio de Producto que vamos a probar
+    private ProductoServicio productoServicio;
 
     @BeforeEach
     void setUp() {
-        // Inicializa los mocks antes de cada test
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testCrearProducto() {
         // Arrange
-        // Usamos el constructor de Lombok @AllArgsConstructor para Producto
-        // CORREGIDO: Quitado las etiquetas de argumento (id:, nombre:, etc.)
-        // Asumiendo que el constructor de Producto es (Long id, String nombre, String descripcion, Double precio, Integer stock, String categoria)
+        // ¡CONSTRUCTORES SIN ETIQUETAS DE ARGUMENTO!
         Producto nuevoProducto = new Producto(null, "Laptop Gamer", "Portátil de alta gama", 1500.0, 10, "Electrónica");
 
-        // Simula el comportamiento del repositorio cuando se guarda un producto
-        // CORREGIDO: Quitado las etiquetas de argumento
         Producto productoGuardado = new Producto(1L, "Laptop Gamer", "Portátil de alta gama", 1500.0, 10, "Electrónica");
         when(productoRepositorio.save(any(Producto.class))).thenReturn(productoGuardado);
 
@@ -51,7 +46,7 @@ public class ProductoServicioTest {
         assertNotNull(resultado, "El producto guardado no debería ser nulo");
         assertEquals(1L, resultado.getId(), "El ID del producto debería ser el esperado");
         assertEquals("Laptop Gamer", resultado.getNombre(), "El nombre del producto debería coincidir");
-        verify(productoRepositorio, times(1)).save(nuevoProducto); // Verifica que save fue llamado
+        verify(productoRepositorio, times(1)).save(nuevoProducto);
     }
 
     @Test
@@ -80,7 +75,7 @@ public class ProductoServicioTest {
         Producto productoExistente = new Producto(3L, "Monitor Curvo", "Monitor de 27 pulgadas", 300.0, 20, "Monitores");
 
         when(productoRepositorio.findById(3L)).thenReturn(Optional.of(productoExistente));
-        when(productoRepositorio.findById(99L)).thenReturn(Optional.empty()); // Simula no encontrado
+        when(productoRepositorio.findById(99L)).thenReturn(Optional.empty());
 
         // Act
         Optional<Producto> encontrado = productoServicio.getProductoById(3L);
@@ -118,12 +113,12 @@ public class ProductoServicioTest {
     void testBorrarProducto() {
         // Arrange
         Long idBorrar = 5L;
-        doNothing().when(productoRepositorio).deleteById(idBorrar); // No hace nada al llamar deleteById
+        doNothing().when(productoRepositorio).deleteById(idBorrar);
 
         // Act
         productoServicio.borrarProducto(idBorrar);
 
         // Assert
-        verify(productoRepositorio, times(1)).deleteById(idBorrar); // Verifica que deleteById fue llamado
+        verify(productoRepositorio, times(1)).deleteById(idBorrar);
     }
 }
