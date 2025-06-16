@@ -1,21 +1,25 @@
 package com.example.SweetDreams.logistica.servicio; // PAQUETE EN MINÚSCULAS
 
-import com.example.SweetDreams.logistica.modelo.Producto;
-import com.example.SweetDreams.logistica.repositorio.ProductoRepositorio;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+
+import com.example.SweetDreams.logistica.modelo.Producto;
+import com.example.SweetDreams.logistica.repositorio.ProductoRepositorio;
 
 public class ProductoServicioTest {
 
@@ -60,7 +64,10 @@ public class ProductoServicioTest {
         when(productoRepositorio.findAll()).thenReturn(productos);
 
         // Act
-        List<Producto> resultado = productoServicio.getAllProductos();
+        List<Producto> resultado = productoServicio.getAllProducts();
+        
+
+        
 
         // Assert
         assertNotNull(resultado, "La lista de productos no debería ser nula");
@@ -80,8 +87,8 @@ public class ProductoServicioTest {
         when(productoRepositorio.findById(99L)).thenReturn(Optional.empty());
 
         // Act
-        Optional<Producto> encontrado = productoServicio.getProductoById(3L);
-        Optional<Producto> noEncontrado = productoServicio.getProductoById(99L);
+        Optional<Producto> encontrado = productoServicio.getProductById(3L);
+        Optional<Producto> noEncontrado = productoServicio.getProductById(99L);
 
         // Assert
         assertTrue(encontrado.isPresent(), "El producto con ID 3 debería ser encontrado");
