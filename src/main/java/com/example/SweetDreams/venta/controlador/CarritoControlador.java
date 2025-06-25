@@ -22,8 +22,17 @@ import com.example.SweetDreams.venta.modelo.Carrito;
 import com.example.SweetDreams.venta.repositorio.CarritoRespositorio;
 import com.example.SweetDreams.venta.servicio.VentaServicio;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/carrito")
+@Tag(name = "Carrito de Compras", description = "Operaciones para gestionar el carrito de compras de los clientes.")
 public class CarritoControlador {
 
     private final CarritoRespositorio carritoRepositorio;
@@ -38,9 +47,18 @@ public class CarritoControlador {
         this.ventaServicio = ventaServicio;
     }
 
-    // Agregar productos al carrito con DTO
+    @Operation(summary = "Agregar productos al carrito", description = "Añade uno o más productos al carrito de compras de un cliente. Si un producto no existe o la solicitud es inválida, devuelve un error.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Productos agregados al carrito exitosamente.",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = Carrito.class))), // Retorna una lista de Carrito
+        @ApiResponse(responseCode = "400", description = "Solicitud inválida o carrito vacío."),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado.")
+    })
     @PostMapping
-    public ResponseEntity<List<Carrito>> agregar(@RequestBody CarritoDTO carritoDTO) {
+    public ResponseEntity<List<Carrito>> agregar(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "DTO que contiene el ID del cliente y una lista de ítems a agregar al carrito.", required = true)
+            @RequestBody CarritoDTO carritoDTO) {
         List<Carrito> carritoItemsGuardados = new ArrayList<>();
 
         if (carritoDTO.getItems() == null || carritoDTO.getItems().isEmpty()) {
@@ -59,7 +77,7 @@ public class CarritoControlador {
             Carrito carrito = new Carrito();
             carrito.setClienteId(carritoDTO.getClienteId());
             carrito.setProductoId(producto.getId());
-            carrito.setProducto(producto.getNombre());
+            carrito.setProducto(producto.getNombre()); // Asumiendo que `Producto` tiene un `getNombre()`
             carrito.setCantidad(item.getCantidad());
             carrito.setPrecioUnitario(item.getPrecioUnitario());
 
@@ -69,9 +87,16 @@ public class CarritoControlador {
         return new ResponseEntity<>(carritoItemsGuardados, HttpStatus.CREATED);
     }
 
-    // Obtener productos del carrito por cliente
+    @Operation(summary = "Obtener productos del carrito por cliente", description = "Recupera todos los ítems actuales en el carrito de compras de un cliente específico.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Ítems del carrito obtenidos exitosamente.",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = Carrito.class))), // Retorna una lista de Carrito
+        @ApiResponse(responseCode = "404", description = "Carrito vacío o cliente no encontrado.")
+    })
     @GetMapping("/{clienteId}")
-    public ResponseEntity<List<Carrito>> obtenerPorCliente(@PathVariable Long clienteId) {
+    public ResponseEntity<List<Carrito>> obtenerPorCliente(
+            @Parameter(description = "ID del cliente para buscar su carrito.", required = true) @PathVariable Long clienteId) {
         List<Carrito> carrito = carritoRepositorio.findByClienteId(clienteId);
         if (carrito.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -80,8 +105,15 @@ public class CarritoControlador {
     }
 
     @Transactional
+    @Operation(summary = "Confirmar compra y vaciar carrito", description = "Procesa los ítems en el carrito de un cliente, registra la venta y luego vacía el carrito de ese cliente.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Compra confirmada exitosamente."),
+        @ApiResponse(responseCode = "400", description = "El carrito del cliente está vacío."),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor al procesar la compra.")
+    })
     @PostMapping("/confirmar/{clienteId}")
-    public ResponseEntity<String> confirmarCompra(@PathVariable Long clienteId) {
+    public ResponseEntity<String> confirmarCompra(
+            @Parameter(description = "ID del cliente que confirma la compra.", required = true) @PathVariable Long clienteId) {
         List<Carrito> carritoItems = carritoRepositorio.findByClienteId(clienteId);
 
         if (carritoItems.isEmpty()) {
@@ -99,6 +131,7 @@ public class CarritoControlador {
 
         CarritoDTO carritoParaServicio = new CarritoDTO(clienteId, itemsParaVenta);
 
+        // Asumiendo que ventaServicio.registrarVenta maneja la lógica de negocio y excepciones
         ventaServicio.registrarVenta(carritoParaServicio);
 
         carritoRepositorio.deleteByClienteId(clienteId);
