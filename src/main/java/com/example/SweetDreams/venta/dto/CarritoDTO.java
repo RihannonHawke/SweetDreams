@@ -1,9 +1,15 @@
 package com.example.SweetDreams.venta.dto;
 
-import java.util.List;
+import java.util.List; // Importa esta línea
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Objeto de transferencia de datos para agregar productos al carrito de un cliente. Contiene el ID del cliente y una lista de ítems a añadir.")
 public class CarritoDTO {
+    @Schema(description = "ID del cliente al que se agregará o modificará el carrito.", example = "5", required = true)
     private Long clienteId;
+
+    @Schema(description = "Lista de ítems (productos y cantidades) a añadir al carrito.", required = true)
     private List<ItemCarritoDTO> items;
 
     public CarritoDTO() {
