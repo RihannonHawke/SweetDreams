@@ -1,17 +1,17 @@
 package com.example.SweetDreams.venta.modelo;
 
-import io.swagger.v3.oas.annotations.media.Schema; // Importa esta línea
+import io.swagger.v3.oas.annotations.media.Schema; 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table; // Es buena práctica usar @Table si el nombre de la tabla difiere o para claridad
+import jakarta.persistence.Table; 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "carritos") // Asumo que el nombre de la tabla es 'carritos', ajústalo si es diferente
+@Table(name = "carritos") 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

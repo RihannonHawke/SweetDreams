@@ -16,7 +16,7 @@ public class Cliente {
     private String nombreCompleto;
     private String direccion;
     private String telefono;
-    private Long usuarioId; // Clave foránea para relacionar con la tabla de Usuario
+    private Long usuarioId; 
 
     // Constructor sin argumentos
     public Cliente() {
