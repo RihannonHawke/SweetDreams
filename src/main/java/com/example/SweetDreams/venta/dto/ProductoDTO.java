@@ -5,7 +5,7 @@ import java.util.Objects;
 public class ProductoDTO {
     private Long id;
     private String nombre;
-    // private String descripcion; // <-- ¡ASEGÚRATE DE ELIMINAR ESTA LÍNEA!
+    // private String descripcion; // <-- ¡ASEGÚRATE DE ELIMINAR ESTA LÍNEA SI NO LA USAS!
     private Double precio;    // <-- ¡ASEGÚRATE DE QUE SEA Double!
     private Integer stock;
 
@@ -30,27 +30,4 @@ public class ProductoDTO {
     public void setPrecio(Double precio) { this.precio = precio; }
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
-
-    @Override
-    public String toString() {
-        return "ProductoDTO{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", precio=" + precio +
-                ", stock=" + stock +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProductoDTO)) return false;
-        ProductoDTO that = (ProductoDTO) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }
