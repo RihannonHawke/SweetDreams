@@ -8,11 +8,11 @@ public class ProductoDTO {
     private Double precio;
     private Integer stock;
 
-    // Constructor vacío (requerido para deserialización JSON)
+    
     public ProductoDTO() {
     }
 
-    // Constructor con todos los campos
+    
     public ProductoDTO(Long id, String nombre, Double precio, Integer stock) {
         this.id = id;
         this.nombre = nombre;
