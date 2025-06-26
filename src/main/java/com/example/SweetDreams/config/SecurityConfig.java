@@ -37,7 +37,7 @@ public class SecurityConfig {
         // que usarás, y passwordEncoder.encode() la codifica.
         UserDetails user = User.builder()
             .username("admin") // Tu nombre de usuario deseado
-            .password(passwordEncoder.encode("admin123"))
+            .password(passwordEncoder.encode("admin"))
             .roles("ADMIN", "USER") // Roles que tendrá este usuario
             .build();
         return new InMemoryUserDetailsManager(user);

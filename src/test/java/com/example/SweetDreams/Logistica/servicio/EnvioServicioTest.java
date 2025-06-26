@@ -1,4 +1,4 @@
-package com.example.SweetDreams.logistica.servicio; // PAQUETE EN MINÚSCULAS
+package com.example.SweetDreams.logistica.servicio;
 
 import java.time.LocalDate;
 import java.util.Arrays;
